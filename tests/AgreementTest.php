@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class AgreementTest extends TestCase
 {
-    public function testGetAgreements()
+    public function testGetAgreements(): void
     {
         $bApplication = '845b7687-3886-4bb4-be1c-33e45a6c3d34';
 
@@ -21,11 +21,11 @@ class AgreementTest extends TestCase
 
         $signature = new Signature(
             bApplication: $bApplication,
-            p12CertificatePath: 'tests/Client_KeyStore_mTLS.p12',
+            p12CertificatePath: 'tests/certs/Client_KeyStore_mTLS.p12',
             p12CertificatePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ=',
-            privateKeyPath: 'tests/Client_private_key_in_pem.pem',
+            privateKeyPath: 'tests/certs/Client_private_key_in_pem.pem',
             privateKeyPhrase: '',
-            publicServerKeyPath: 'tests/Server_PublicKey_JWE.pem',
+            publicServerKeyPath: 'tests/certs/Server_PublicKey_JWE.pem',
         );
 
         $agreement = new Agreement(
