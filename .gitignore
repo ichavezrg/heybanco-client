@@ -1,4 +1,56 @@
 index.php
+
+# Composer
+/vendor/
+composer.phar
+composer.lock
+
+# PHPUnit
+/phpunit.xml
+/coverage/
+/.phpunit.result.cache
+
+# PHPStan
+/phpstan.neon
+/.phpstan.cache
+
+# IDE
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Cache
+/.cache/
+
+# Build artifacts
+/build/
+/dist/
+
+# Certificates and sensitive files
 tests/certs/*
-vendor/*
-.idea/*
+*.p12
+*.pem
+*.key
+*.crt
+
+# Example/demo files (uncomment if needed)
+# index.php
+# example.php
+
+# Temporary files
+*.tmp
+*.temp
