@@ -1,6 +1,6 @@
 <?php
 
-namespace Ichavez\HeyBancoClient;
+namespace Ichavezrg\HeyBancoClient;
 
 class HeyBancoClient
 {

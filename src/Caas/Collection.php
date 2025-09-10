@@ -1,10 +1,10 @@
 <?php
 
-namespace Ichavez\HeyBancoClient\Caas;
+namespace Ichavezrg\HeyBancoClient\Caas;
 
 use DateTimeImmutable;
-use Ichavez\HeyBancoClient\Auth;
-use Ichavez\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Auth;
+use Ichavezrg\HeyBancoClient\Client;
 
 class Collection
 {

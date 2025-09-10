@@ -1,6 +1,6 @@
 <?php
 
-namespace Ichavez\HeyBancoClient;
+namespace Ichavezrg\HeyBancoClient;
 
 use GuzzleHttp\Client as HttpClient;
 
@@ -27,6 +27,11 @@ class Client
             throw new \Exception('MTLs keystore file not found');
         }
 
+        // Verificar que la extensión curl esté disponible
+        if (!extension_loaded('curl')) {
+            throw new \Exception('CURL extension is required but not installed');
+        }
+
         $this->httpClient = new HttpClient([
             'base_uri' => $this->host,
             'debug' => $this->debug,
@@ -37,11 +42,11 @@ class Client
                 'Accept-Charset' => 'UTF-8',
             ],
             'curl' => [
-                CURLOPT_SSLCERT => $this->mtlsKeystorePath,
-                CURLOPT_SSLCERTPASSWD => $this->mtlsKeystorePassword,
-                CURLOPT_SSLCERTTYPE => 'P12',
-                CURLOPT_SSL_VERIFYPEER => true,
-                CURLOPT_SSL_VERIFYHOST => 2,
+                \CURLOPT_SSLCERT => $this->mtlsKeystorePath,
+                \CURLOPT_SSLCERTPASSWD => $this->mtlsKeystorePassword,
+                \CURLOPT_SSLCERTTYPE => 'P12',
+                \CURLOPT_SSL_VERIFYPEER => true,
+                \CURLOPT_SSL_VERIFYHOST => 2,
             ],
         ]);
     }

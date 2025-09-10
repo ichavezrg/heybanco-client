@@ -1,17 +1,16 @@
 <?php
 
-namespace Ichavez\HeyBancoClient\Caas;
+namespace Ichavezrg\HeyBancoClient\Caas;
 
-use Ichavez\HeyBancoClient\Auth;
-use Ichavez\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Auth;
+use Ichavezrg\HeyBancoClient\Client;
 
 class User
 {
     public function __construct(
         private readonly Client $client,
         private readonly Auth $auth
-    ) {
-    }
+    ) {}
 
     /**
      * Consulta a un usuario de un contrato de cobranza domiciliada.

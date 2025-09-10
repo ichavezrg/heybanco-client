@@ -1,9 +1,7 @@
 <?php
 
-namespace Ichavez\HeyBancoClient\Tests;
-
-use Ichavez\HeyBancoClient\Auth;
-use Ichavez\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Auth;
+use Ichavezrg\HeyBancoClient\Client;
 use PHPUnit\Framework\TestCase;
 
 class AuthTest extends TestCase

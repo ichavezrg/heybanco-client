@@ -19,12 +19,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Ichavez\\HeyBancoClient\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Ichavez\\HeyBancoClient\\Tests\\": "tests/"
+      "Ichavezrg\\HeyBancoClient\\": "src/"
     }
   },
   "authors": [

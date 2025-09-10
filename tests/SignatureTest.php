@@ -1,8 +1,6 @@
 <?php
 
-namespace Ichavez\HeyBancoClient\Tests;
-
-use Ichavez\HeyBancoClient\Signature;
+use Ichavezrg\HeyBancoClient\Signature;
 use PHPUnit\Framework\TestCase;
 
 class SignatureTest extends TestCase
@@ -11,8 +9,8 @@ class SignatureTest extends TestCase
     {
         $signature = new Signature(
             bApplication: '845b7687-3886-4bb4-be1c-33e45a6c3d34',
-            mtlsCertificatePath: 'tests/certs/Client_KeyStore_mTLS.p12',
-            mtlsCertificatePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ=',
+            p12CertificatePath: 'tests/certs/Client_KeyStore_mTLS.p12',
+            p12CertificatePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ=',
             privateKeyPath: 'tests/certs/Client_private_key_in_pem.pem',
             privateKeyPhrase: '',
             publicServerKeyPath: 'tests/certs/Server_PublicKey_JWE.pem'

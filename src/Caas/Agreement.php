@@ -1,11 +1,11 @@
 <?php
 
-namespace Ichavez\HeyBancoClient\Caas;
+namespace Ichavezrg\HeyBancoClient\Caas;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Ichavez\HeyBancoClient\Auth;
-use Ichavez\HeyBancoClient\Client;
-use Ichavez\HeyBancoClient\Signature;
+use Ichavezrg\HeyBancoClient\Auth;
+use Ichavezrg\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Signature;
 
 class Agreement
 {

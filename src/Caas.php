@@ -1,6 +1,6 @@
 <?php
 
-namespace Ichavez\HeyBancoClient;
+namespace Ichavezrg\HeyBancoClient;
 
 use Ichavez\HeyBancoClient\Caas\Agreement;
 use Ichavez\HeyBancoClient\Caas\Collection;

@@ -1,8 +1,9 @@
 <?php
 
-namespace Ichavez\HeyBancoClient;
+declare(strict_types=1);
 
-use Exception;
+namespace Ichavezrg\HeyBancoClient;
+
 use Jose\Component\Core\AlgorithmManager;
 use Jose\Component\Core\JWK;
 use Jose\Component\Encryption\Algorithm\ContentEncryption\A256GCM;
@@ -24,8 +25,8 @@ class Signature
 
     public function __construct(
         public readonly string $bApplication,
-        public readonly string $mtlsCertificatePath,
-        public readonly string $mtlsCertificatePassword,
+        public readonly string $p12CertificatePath,
+        public readonly string $p12CertificatePassword,
         public readonly string $privateKeyPath,
         private readonly string $privateKeyPhrase,
         public readonly string $publicServerKeyPath,
@@ -78,26 +79,30 @@ class Signature
 
     public function decrypt(string $sign): string
     {
-        $jweDecrypter = new JWEDecrypter(
-            $this->keyEncryptionAlgorithmManager,
-            $this->contentEncryptionAlgorithmManager,
-        );
+        try {
+            $jweDecrypter = new JWEDecrypter(
+                $this->keyEncryptionAlgorithmManager,
+                $this->contentEncryptionAlgorithmManager,
+            );
 
-        $serializerManager = new JWESerializerManager([new \Jose\Component\Encryption\Serializer\CompactSerializer()]);
-        $jwe = $serializerManager->unserialize($sign);
-        $privateKey = $this->getJwsPrivateKey();
+            $serializerManager = new JWESerializerManager([new \Jose\Component\Encryption\Serializer\CompactSerializer()]);
+            $jwe = $serializerManager->unserialize($sign);
+            $privateKey = $this->getJwsPrivateKey();
 
-        $recipients = $jwe->getRecipients();
-        if (empty($recipients)) {
-            throw new \Exception('No recipients found in JWE');
+            $recipients = $jwe->getRecipients();
+            if (empty($recipients)) {
+                throw new \Exception('No recipients found in JWE');
+            }
+
+            $success = $jweDecrypter->decryptUsingKey($jwe, $privateKey, 0);
+            print_r($success);
+            exit;
+            if (!$success) {
+                throw new \Exception('Invalid decryption - JWE decryption failed');
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Decryption error: ' . $e->getMessage());
         }
-
-        $success = $jweDecrypter->decryptUsingKey($jwe, $privateKey, 0);
-
-        if (!$success) {
-            throw new \Exception('Invalid decryption - JWE decryption failed');
-        }
-
 
         $algorithmManager = new AlgorithmManager([new RS256()]);
         // We instantiate our JWS Verifier.
@@ -113,12 +118,7 @@ class Signature
             throw new \Exception('Invalid signature');
         }
 
-        $payload = $jws->getPayload();
-        if ($payload === null) {
-            throw new \Exception('Invalid payload');
-        }
-
-        return $payload;
+        return $jws->getPayload();
     }
 
     private function getJwsPrivateKey(): JWK
