@@ -2,6 +2,7 @@
 
 namespace Ichavezrg\HeyBancoClient\Caas;
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Ichavezrg\HeyBancoClient\Auth;
 use Ichavezrg\HeyBancoClient\Client;
@@ -78,8 +79,44 @@ class Agreement
      * @return array<array{collectionId: int, userId: int, accountNumber: string, chargeDate: int, periodicityId: string, amount: float, reference: string, status: string, charge: string, causeRejection: string}>
      * @throws \Exception
      */
-    public function getTransactions(string $agreementId): array
+    public function getTransactions(int $agreementId, \DateTimeImmutable|null $from, \DateTimeImmutable|null $to, int $page, int $size): array
     {
-        throw new \Exception("Not implemented");
+        $sizeValues = [10, 100, 1000];
+        if (!in_array($size, $sizeValues)) {
+            throw new \Exception("Size must be one of the following values: " . implode(", ", $sizeValues));
+        }
+
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = (string)random_int(10000, 99999);
+        try {
+            $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/transactions", [
+                'headers' => [
+                    'B-Option' => 0,
+                    'B-Transaction' => $bTransaction,
+                    'Authorization' => 'Bearer ' . $accessToken['access_token'],
+                ],
+                'query' => [
+                    'from' => $from?->format('Y-m-d'),
+                    'to' => $to?->format('Y-m-d'),
+                    'page' => $page,
+                    'size' => $size,
+                ]
+            ]);
+
+            return $this->signature->decrypt(json_decode($response->getBody()->getContents(), true));
+        } catch (ClientException $e) {
+            if ($e->getCode() === 404) {
+                $responseArray = json_decode($e->getResponse()->getBody()->getContents(), true);
+                if ($responseArray["code"] === "NF-76") {
+                    // transactions not found
+                    return [];
+                }
+            }
+            throw $e;
+        }
     }
 }

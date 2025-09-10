@@ -1,0 +1,14 @@
+services:
+  heybanco-client:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: "heybanco-client"
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=America/Mexico_city
+      - HOME=/root

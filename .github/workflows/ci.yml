@@ -24,7 +24,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: curl, json
+          extensions: curl, json, openssl
           coverage: xdebug
 
       - name: Cache Composer packages
