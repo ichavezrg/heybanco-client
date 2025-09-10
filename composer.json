@@ -1,0 +1,27 @@
+{
+  "name": "ichavez/heybanco-client",
+  "description": "HeyBanco Api Client",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Ichavez\\HeyBancoClient\\": "src/",
+      "Ichavez\\HeyBancoClient\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "ichavezrg",
+      "email": "ichavez@redgirasol.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ext-curl": "*",
+    "guzzlehttp/guzzle": "8.0.x-dev",
+    "web-token/jwt-framework": "^3.2"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "11.5.x-dev"
+  }
+}
