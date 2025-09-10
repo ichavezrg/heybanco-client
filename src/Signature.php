@@ -113,7 +113,12 @@ class Signature
             throw new \Exception('Invalid signature');
         }
 
-        return $jws->getPayload();
+        $payload = $jws->getPayload();
+        if ($payload === null) {
+            throw new \Exception('Invalid payload');
+        }
+
+        return $payload;
     }
 
     private function getJwsPrivateKey(): JWK

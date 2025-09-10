@@ -8,13 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class AuthTest extends TestCase
 {
-    public function testGenerateToken()
+    public function testGenerateToken(): void
     {
         $auth = new Auth(
             new Client(
                 'https://sbox-api-tech.hey.inc',
                 '845b7687-3886-4bb4-be1c-33e45a6c3d34',
-                'tests/Client_KeyStore_mTLS.p12',
+                'tests/certs/Client_KeyStore_mTLS.p12',
                 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ='
             )
         );
