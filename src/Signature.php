@@ -74,7 +74,7 @@ class Signature
         return $serializer->serialize($jwe, 0);
     }
 
-    public function decrypt(string $sign): string
+    public function decrypt(string $sign): array
     {
         try {
             $jweDecrypter = new JWEDecrypter(
