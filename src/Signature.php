@@ -37,44 +37,41 @@ class Signature
 
     public function sign(array $payload): string
     {
-        try {
-            $algorithmManager = new AlgorithmManager([new RS256()]);
-            $jwsBuilder = new JWSBuilder($algorithmManager);
-            $encodedPayload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-            if ($encodedPayload === false) {
-                throw new \RuntimeException('Error encoding payload');
-            }
 
-            $jws = $jwsBuilder
-                ->create()
-                ->withPayload($encodedPayload)
-                ->addSignature($this->getJwsPrivateKey(), ['alg' => 'RS256'])
-                ->build();
-
-            $serializer = new CompactSerializer();
-            $signedPayload = $serializer->serialize($jws, 0);
-
-            $jweBuilder = new JWEBuilder(
-                $this->keyEncryptionAlgorithmManager,
-                $this->contentEncryptionAlgorithmManager
-            );
-
-            $jwe = $jweBuilder
-                ->create()
-                ->withPayload($signedPayload)
-                ->withSharedProtectedHeader([
-                    'alg' => 'RSA-OAEP-256',
-                    'enc' => 'A256GCM',
-                    'kid' => $this->bApplication
-                ])
-                ->addRecipient($this->getJwkPublicKey())
-                ->build();
-
-            $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer();
-            return $serializer->serialize($jwe, 0);
-        } catch (\Exception $e) {
-            throw new \Exception('Signing error: ' . $e->getMessage());
+        $algorithmManager = new AlgorithmManager([new RS256()]);
+        $jwsBuilder = new JWSBuilder($algorithmManager);
+        $encodedPayload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if ($encodedPayload === false) {
+            throw new \RuntimeException('Error encoding payload');
         }
+
+        $jws = $jwsBuilder
+            ->create()
+            ->withPayload($encodedPayload)
+            ->addSignature($this->getJwsPrivateKey(), ['alg' => 'RS256'])
+            ->build();
+
+        $serializer = new CompactSerializer();
+        $signedPayload = $serializer->serialize($jws, 0);
+
+        $jweBuilder = new JWEBuilder(
+            $this->keyEncryptionAlgorithmManager,
+            $this->contentEncryptionAlgorithmManager
+        );
+
+        $jwe = $jweBuilder
+            ->create()
+            ->withPayload($signedPayload)
+            ->withSharedProtectedHeader([
+                'alg' => 'RSA-OAEP-256',
+                'enc' => 'A256GCM',
+                'kid' => $this->bApplication
+            ])
+            ->addRecipient($this->getJwkPublicKey())
+            ->build();
+
+        $serializer = new \Jose\Component\Encryption\Serializer\CompactSerializer();
+        return $serializer->serialize($jwe, 0);
     }
 
     public function decrypt(string $sign): string
@@ -95,8 +92,7 @@ class Signature
             }
 
             $success = $jweDecrypter->decryptUsingKey($jwe, $privateKey, 0);
-            print_r($success);
-            exit;
+
             if (!$success) {
                 throw new \Exception('Invalid decryption - JWE decryption failed');
             }
@@ -118,7 +114,11 @@ class Signature
             throw new \Exception('Invalid signature');
         }
 
-        return $jws->getPayload();
+        $payload = $jws->getPayload();
+        if ($payload === null) {
+            throw new \RuntimeException('Error decoding payload');
+        }
+        return json_decode($payload, true);
     }
 
     private function getJwsPrivateKey(): JWK
