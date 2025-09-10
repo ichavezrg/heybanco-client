@@ -6,6 +6,9 @@ class Auth
 {
     public function __construct(private Client $client) {}
 
+    /**
+     * array{access_token: string, refresh_expires_in: int, expires_in: int, token_type: string, scope: string, id_token: string, scope: string}
+     */
     public function generateToken(string $clientId, string $clientSecret): array
     {
         $response = $this->client->http()->post('/auth/v1/oidc/token', [

@@ -13,8 +13,7 @@ class Agreement
         private readonly Client $client,
         private readonly Auth $auth,
         private readonly Signature $signature
-    ) {
-    }
+    ) {}
 
     /**
      * Verificar el estado de al API
@@ -23,7 +22,7 @@ class Agreement
      * metodo OPTIONS, el servidor responderá con un código de estado 200 si la API está funcionando correctamente.
      * Si la API no está disponible o está experimentando problemas, se devolverá un código de estado 503.
      *
-     * @return array
+     * @return array{allow: string, dataTime: int, responseTime: string, status: string}
      * @throws \Exception
      */
     public function healthCheck(): array
@@ -38,10 +37,10 @@ class Agreement
      * @param string $bTransaction
      * @param string $clientId
      * @param string $clientSecret
-     * @return mixed
+     * @return array{agreementId: int, fundConcentrationId: int, agreementAccountNumber: string, ball: array{availableFunds: float, monthlyTransactionLimit: float, frozenBalance: float}}
      * @throws GuzzleException
      */
-    public function getAgreements(string $accountNumber, string $bTransaction, string $clientId, string $clientSecret)
+    public function find(string $accountNumber, string $bTransaction, string $clientId, string $clientSecret): array
     {
         $accessToken = $this->auth->generateToken(
             $clientId,
@@ -61,14 +60,14 @@ class Agreement
 
         $responseArray = json_decode($response->getBody()->getContents(), true);
 
-        return $this->signature->decrypt($responseArray["data"]);
+        return json_decode($this->signature->decrypt($responseArray["data"]), true);
     }
 
     /**
      * Consulta el estatus de cargos realizados por domiciliación en un periodo de tiempo.
      *
      * @param string $agreementId
-     * @return array
+     * @return array<array{collectionId: int, userId: int, accountNumber: string, chargeDate: int, periodicityId: string, amount: float, reference: string, status: string, charge: string, causeRejection: string}>
      * @throws \Exception
      */
     public function getTransactions(string $agreementId): array
