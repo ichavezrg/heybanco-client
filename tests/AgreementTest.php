@@ -8,18 +8,24 @@ use PHPUnit\Framework\TestCase;
 
 class AgreementTest extends TestCase
 {
-    public function testGetAgreements(): void
+    private Client $client;
+    private Signature $signature;
+    private Agreement $agreement;
+
+    public function setUp(): void
     {
+        parent::setUp();
+
         $bApplication = '845b7687-3886-4bb4-be1c-33e45a6c3d34';
 
-        $client = new Client(
+        $this->client = new Client(
             host: 'https://sbox-api-tech.hey.inc',
             bApplication: $bApplication,
             mtlsKeystorePath: 'tests/certs/Client_KeyStore_mTLS.p12',
             mtlsKeystorePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ='
         );
 
-        $signature = new Signature(
+        $this->signature = new Signature(
             bApplication: $bApplication,
             p12CertificatePath: 'tests/certs/Client_KeyStore_mTLS.p12',
             p12CertificatePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ=',
@@ -28,13 +34,16 @@ class AgreementTest extends TestCase
             publicServerKeyPath: 'tests/certs/Server_PublicKey_JWE.pem',
         );
 
-        $agreement = new Agreement(
-            $client,
-            new Auth($client),
-            $signature
+        $this->agreement = new Agreement(
+            $this->client,
+            new Auth($this->client),
+            $this->signature
         );
+    }
 
-        $agreements = $agreement->find(
+    public function testGetAgreements(): void
+    {
+        $agreements = $this->agreement->find(
             '220914510015',
             (string)random_int(10000, 99999),
             'c78ee0f5-c521-4896-84a0-4ba13ecce4dd',
@@ -42,5 +51,11 @@ class AgreementTest extends TestCase
         );
 
         $this->assertNotEmpty($agreements);
+    }
+
+    public function testHealthCheck(): void
+    {
+        $healthCheck = $this->agreement->healthCheck("123456");
+        $this->assertNotEmpty($healthCheck);
     }
 }

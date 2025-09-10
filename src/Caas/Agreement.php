@@ -25,9 +25,17 @@ class Agreement
      * @return array{allow: string, dataTime: int, responseTime: string, status: string}
      * @throws \Exception
      */
-    public function healthCheck(): array
+    public function healthCheck(string $bTransaction): array
     {
-        throw new \Exception("Not implemented");
+        $response = $this->client->http()->options('/caas/v1.0/agreements', [
+            'headers' => [
+                'B-Application' => $this->client->bApplication,
+                'B-Transaction' => $bTransaction,
+                'B-Option' => 0,
+            ]
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -60,7 +68,7 @@ class Agreement
 
         $responseArray = json_decode($response->getBody()->getContents(), true);
 
-        return json_decode($this->signature->decrypt($responseArray["data"]), true);
+        return $this->signature->decrypt($responseArray["data"]);
     }
 
     /**
