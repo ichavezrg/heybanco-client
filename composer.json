@@ -1,5 +1,5 @@
 {
-  "name": "ichavez/heybanco-client",
+  "name": "ichavezrg/heybanco-client",
   "description": "Cliente PHP para la API de HeyBanco",
   "type": "library",
   "license": "MIT",
