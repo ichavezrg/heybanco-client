@@ -2,27 +2,78 @@
 
 namespace Ichavezrg\HeyBancoClient\Caas;
 
+use GuzzleHttp\Exception\ClientException;
 use Ichavezrg\HeyBancoClient\Auth;
 use Ichavezrg\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Signature;
 
 class User
 {
     public function __construct(
         private readonly Client $client,
-        private readonly Auth $auth
+        private readonly Auth $auth,
+        private readonly Signature $signature
     ) {}
+
+    public function create(int $agreementId, string $verificationCode, array $userRequests): array
+    {
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "123456";
+
+
+        $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/users", [
+            'headers' => [
+                'B-Option' => 0,
+                'B-Transaction' => $bTransaction,
+                'B-Application' => $this->client->bApplication,
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+                'B-authentication-code' => $verificationCode,
+            ],
+            'json' => ['data' => $this->signature->sign($userRequests)]
+        ]);
+
+        // Al crear un solo usuario en el contrato, la cabecera "Location" contendrá el identificador único del usuario
+        // /agreements/62/users/139
+        $headers = $response->getHeaders();
+        $location = $headers['location'][0];
+        $userId = explode('/', $location)[4];
+
+        return ["id" => $userId];
+    }
 
     /**
      * Consulta a un usuario de un contrato de cobranza domiciliada.
      *
-     * @param string $agreementId
-     * @param string $userId
+     * @param int $agreementId
+     * @param int $userId
      * @return array
      * @throws \Exception
      */
-    public function show(string $agreementId, string $userId): array
+    public function show(int $agreementId, int $userId): array
     {
-        throw new \Exception("Not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "123456";
+
+        $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/users/{$userId}", [
+            'headers' => [
+                'B-Option' => 0,
+                'B-Transaction' => $bTransaction,
+                'B-Application' => $this->client->bApplication,
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+            ],
+        ]);
+
+        $payload = json_decode($response->getBody()->getContents(), true);
+
+        return $this->signature->decrypt($payload['data']);
     }
 
     /**
@@ -32,9 +83,27 @@ class User
      * @return array
      * @throws \Exception
      */
-    public function find(string $agreementId): array
+    public function find(int $agreementId): array
     {
-        throw new \Exception("Not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "123456";
+
+        $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/users", [
+            'headers' => [
+                'B-Option' => 0,
+                'B-Transaction' => $bTransaction,
+                'B-Application' => $this->client->bApplication,
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+            ],
+        ]);
+
+        $payload = json_decode($response->getBody()->getContents(), true);
+
+        return $this->signature->decrypt($payload['data']);
     }
 
     /**
@@ -47,9 +116,26 @@ class User
      * @return void
      * @throws \Exception
      */
-    public function delete(string $agreementId, array $userIds): void
+    public function delete(int $agreementId, array $userIds): array
     {
-        throw new \Exception("Not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "123456";
+
+        $response = $this->client->http()->delete("/caas/v1.0/agreements/{$agreementId}/users", [
+            'headers' => [
+                'B-Option' => 0,
+                'B-Transaction' => $bTransaction,
+                'B-Application' => $this->client->bApplication,
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+            ],
+            'json' => ['data' => $this->signature->sign($userIds)]
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -59,11 +145,28 @@ class User
      *
      * @param string $agreementId
      * @param array $userUpdateRequests
-     * @return void
+     * @return array
      * @throws \Exception
      */
-    public function update(string $agreementId, array $userUpdateRequests): void
+    public function update(int $agreementId, array $userUpdateRequests): array
     {
-        throw new \Exception("Not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "123456";
+
+        $response = $this->client->http()->patch("/caas/v1.0/agreements/{$agreementId}/users", [
+            'headers' => [
+                'B-Option' => 0,
+                'B-Transaction' => $bTransaction,
+                'B-Application' => $this->client->bApplication,
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+            ],
+            'json' => ['data' => $this->signature->sign($userUpdateRequests)]
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
     }
 }
