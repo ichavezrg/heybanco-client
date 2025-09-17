@@ -107,7 +107,11 @@ class Agreement
                 ]
             ]);
 
-            return $this->signature->decrypt(json_decode($response->getBody()->getContents(), true));
+            $payload = json_decode($response->getBody()->getContents(), true);
+            $uncryptedPayload = $this->signature->decrypt($payload["data"]);
+            $payload["data"] = $uncryptedPayload;
+
+            return $payload;
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
                 $responseArray = json_decode($e->getResponse()->getBody()->getContents(), true);

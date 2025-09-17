@@ -59,7 +59,10 @@ class Collection
 
             $payload = json_decode($response->getBody()->getContents(), true);
 
-            return $this->signature->decrypt($payload["data"]);
+            $uncryptedPayload = $this->signature->decrypt($payload["data"]);
+            $payload["data"] = $uncryptedPayload;
+
+            return $payload;
         } catch (ClientException | ServerException $e) {
             if ($e->getCode() === 404) {
                 $responseArray = json_decode($e->getResponse()->getBody()->getContents(), true);
