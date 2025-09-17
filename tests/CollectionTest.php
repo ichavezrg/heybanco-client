@@ -83,4 +83,11 @@ class CollectionTest extends TestCase
         exit;
         $this->assertNotEmpty($collection["data"]);
     }
+
+    public function testCancel(): void
+    {
+        $collection = $this->collection->cancel(62, [["collectionId" => 14105]]);
+        print_r($collection);
+        exit;
+    }
 }
