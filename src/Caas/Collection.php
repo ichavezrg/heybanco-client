@@ -115,28 +115,21 @@ class Collection
             "collectionValidity" => $collectionValidity->toArray()
         ];
 
-        try {
-            $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/collections", [
-                "headers" => [
-                    "Authorization" => "Bearer " . $accessToken['access_token'],
-                    "B-Option" => 0,
-                    "B-Transaction" => $bTransaction,
-                    "B-Application" => $this->client->bApplication,
-                    "B-authentication-code" => $verificationCode,
-                ],
-                "json" => [
-                    "data" => $this->signature->sign($payload)
-                ]
-            ]);
+        $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/collections", [
+            "headers" => [
+                "Authorization" => "Bearer " . $accessToken['access_token'],
+                "B-Option" => 0,
+                "B-Transaction" => $bTransaction,
+                "B-Application" => $this->client->bApplication,
+                "B-authentication-code" => $verificationCode,
+            ],
+            "json" => [
+                "data" => $this->signature->sign($payload)
+            ]
+        ]);
 
-            $payload = json_decode($response->getBody()->getContents(), true);
-            print_r($payload);
-            return $this->signature->decrypt($payload["data"]);
-        } catch (ServerException | ClientException $e) {
-            $payload = json_decode($e->getResponse()->getBody()->getContents(), true);
-            print_r($payload);
-            exit;
-        }
+        $payload = json_decode($response->getBody()->getContents(), true);
+        return $this->signature->decrypt($payload["data"]);
     }
 
     /**
@@ -170,8 +163,6 @@ class Collection
             ]
         ]);
 
-        $payload = json_decode($response->getBody()->getContents(), true);
-
-        return $this->signature->decrypt($payload["data"]);
+        return json_decode($response->getBody()->getContents(), true);
     }
 }
