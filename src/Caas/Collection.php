@@ -3,52 +3,135 @@
 namespace Ichavezrg\HeyBancoClient\Caas;
 
 use DateTimeImmutable;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Ichavezrg\HeyBancoClient\Auth;
 use Ichavezrg\HeyBancoClient\Client;
+use Ichavezrg\HeyBancoClient\Signature;
 
 class Collection
 {
     public function __construct(
         private readonly Client $client,
-        private readonly Auth $auth
-    ) {
-    }
+        private readonly Auth $auth,
+        private readonly Signature $signature
+    ) {}
 
     /**
      * Consulta domiciliación de cargos previamente programadas.
      *
-     * @param string $agreementId
+     * @param int $agreementId
      * @return array
      * @throws \Exception
      */
-    public function find(string $agreementId): array
-    {
-        throw new \Exception("method not implemented");
+    public function find(
+        int $agreementId,
+        int $page,
+        int $size,
+        DateTimeImmutable $from,
+        DateTimeImmutable $to,
+        ?string $reference = null,
+        ?string $accountNumber = null
+    ): array {
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = (string)random_int(10000, 99999);
+        try {
+            $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/collections", [
+                "headers" => [
+                    "Authorization" => "Bearer " . $accessToken['access_token'],
+                    "B-Option" => 0,
+                    "B-Transaction" => $bTransaction,
+                    "B-Application" => $this->client->bApplication,
+                ],
+                "query" => [
+                    "reference" => $reference,
+                    "accountNumber" => $accountNumber,
+                    "from" => $from?->format('Y-m-d'),
+                    "to" => $to?->format('Y-m-d'),
+                    "page" => $page,
+                    "size" => $size,
+                ],
+            ]);
+
+            return $this->signature->decrypt(json_decode($response->getBody()->getContents(), true));
+        } catch (ClientException|ServerException $e) {
+            if ($e->getCode() === 404) {
+                $responseArray = json_decode($e->getResponse()->getBody()->getContents(), true);
+                if ($responseArray["code"] === "NF-65") {
+                    // collections not found
+                    return [];
+                }
+            }
+            print_r($e->getResponse()->getBody()->getContents());
+            throw $e;
+        }
     }
 
     /**
      * Programa cargos de domiciliación.
      *
-     * @param string $agreementId
-     * @param string $userId
+     * @param int $agreementIds
+     * @param int $userId
      * @param string $reference
      * @param float $amount
-     * @param string $periodicity
+     * @param Periodicity $periodicity
      * @param DateTimeImmutable $firstCollectionDate
-     * @param array $collectionValidity
+     * @param CollectionValidity $collectionValidity
      * @return array
      * @throws \Exception
      */
     public function create(
-        string $agreementId,
-        string $userId,
+        int $agreementId,
+        string $verificationCode,
+        int $userId,
         string $reference,
         float $amount,
-        string $periodicity,
+        Periodicity $periodicity,
         DateTimeImmutable $firstCollectionDate,
-        array $collectionValidity
+        CollectionValidity $collectionValidity
     ): array {
-        throw new \Exception("method not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = "243456";
+
+        $payload = [
+            "userId" => $userId,
+            "reference" => $reference,
+            "amount" => $amount,
+            "periodicityId" => $periodicity->value,
+            "firstCollectionDate" => $firstCollectionDate->format('Y-m-d'),
+            "collectionValidity" => $collectionValidity->toArray()
+        ];
+
+        try {
+            $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/collections", [
+                "headers" => [
+                    "Authorization" => "Bearer " . $accessToken['access_token'],
+                    "B-Option" => 0,
+                    "B-Transaction" => $bTransaction,
+                    "B-Application" => $this->client->bApplication,
+                    "B-authentication-code" => $verificationCode,
+                ],
+                "json" => [
+                    "data" => $this->signature->sign($payload)
+                ]
+            ]);
+
+            $payload = json_decode($response->getBody()->getContents(), true);
+            print_r($payload);
+            return $this->signature->decrypt($payload["data"]);
+        } catch (ServerException | ClientException $e) {
+            $payload = json_decode($e->getResponse()->getBody()->getContents(), true);
+            print_r($payload);
+            exit;
+        }
     }
 
     /**
@@ -63,6 +146,27 @@ class Collection
      */
     public function cancel(string $agreementId, array $collectionIds): array
     {
-        throw new \Exception("method not implemented");
+        $accessToken = $this->auth->generateToken(
+            $this->auth->clientId,
+            $this->auth->clientSecret
+        );
+
+        $bTransaction = (string)random_int(10000, 99999);
+
+        $response = $this->client->http()->delete("/caas/v1.0/agreements/{$agreementId}/collections", [
+            "headers" => [
+                "Authorization" => "Bearer " . $accessToken['access_token'],
+                "B-Option" => 0,
+                "B-Transaction" => $bTransaction,
+                "B-Application" => $this->client->bApplication,
+            ],
+            "json" => [
+                "data" => $this->signature->sign($collectionIds)
+            ]
+        ]);
+
+        $payload = json_decode($response->getBody()->getContents(), true);
+
+        return $this->signature->decrypt($payload["data"]);
     }
 }
