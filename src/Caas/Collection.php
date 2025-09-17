@@ -57,8 +57,10 @@ class Collection
                 ],
             ]);
 
-            return $this->signature->decrypt(json_decode($response->getBody()->getContents(), true));
-        } catch (ClientException|ServerException $e) {
+            $payload = json_decode($response->getBody()->getContents(), true);
+
+            return $this->signature->decrypt($payload["data"]);
+        } catch (ClientException | ServerException $e) {
             if ($e->getCode() === 404) {
                 $responseArray = json_decode($e->getResponse()->getBody()->getContents(), true);
                 if ($responseArray["code"] === "NF-65") {
