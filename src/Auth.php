@@ -23,4 +23,16 @@ class Auth
 
         return json_decode($response->getBody()->getContents(), true);
     }
+
+    public function showPermissions(): array
+    {
+        $accessToken = $this->generateToken();
+        $response = $this->client->http()->get('/auth/v1/oidc/userinfo?scopes=profiless&claims=work', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken['access_token'],
+            ],
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
 }
