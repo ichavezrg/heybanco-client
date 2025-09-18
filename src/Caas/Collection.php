@@ -38,7 +38,7 @@ class Collection
             $this->auth->clientSecret
         );
 
-        $bTransaction = (string)random_int(10000, 99999);
+        $bTransaction = $this->auth->generateBTransaction();
         try {
             $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/collections", [
                 "headers" => [
@@ -104,7 +104,7 @@ class Collection
             $this->auth->clientSecret
         );
 
-        $bTransaction = "243456";
+        $bTransaction = $this->auth->generateBTransaction();
 
         $payload = [
             "userId" => $userId,
@@ -148,7 +148,7 @@ class Collection
             $this->auth->clientSecret
         );
 
-        $bTransaction = (string)random_int(10000, 99999);
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->delete("/caas/v1.0/agreements/{$agreementId}/collections", [
             "headers" => [

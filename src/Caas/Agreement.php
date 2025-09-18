@@ -26,8 +26,10 @@ class Agreement
      * @return array{allow: string, dataTime: int, responseTime: string, status: string}
      * @throws \Exception
      */
-    public function healthCheck(string $bTransaction): array
+    public function healthCheck(): array
     {
+        $bTransaction = $this->auth->generateBTransaction();
+
         $response = $this->client->http()->options('/caas/v1.0/agreements', [
             'headers' => [
                 'B-Application' => $this->client->bApplication,
@@ -43,18 +45,19 @@ class Agreement
      * Consulta información del contrato de cobranza domiciliada por número de cuenta.
      *
      * @param string $accountNumber
-     * @param string $bTransaction
      * @param string $clientId
      * @param string $clientSecret
      * @return array{agreementId: int, fundConcentrationId: int, agreementAccountNumber: string, ball: array{availableFunds: float, monthlyTransactionLimit: float, frozenBalance: float}}
      * @throws GuzzleException
      */
-    public function find(string $accountNumber, string $bTransaction, string $clientId, string $clientSecret): array
+    public function find(string $accountNumber, string $clientId, string $clientSecret): array
     {
         $accessToken = $this->auth->generateToken(
             $clientId,
             $clientSecret
         );
+
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->get('/caas/v1.0/agreements', [
             'headers' => [
@@ -91,7 +94,8 @@ class Agreement
             $this->auth->clientSecret
         );
 
-        $bTransaction = (string)random_int(10000, 99999);
+        $bTransaction = $this->auth->generateBTransaction();
+
         try {
             $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/transactions", [
                 'headers' => [

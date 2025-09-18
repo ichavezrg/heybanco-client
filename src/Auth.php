@@ -24,6 +24,11 @@ class Auth
         return json_decode($response->getBody()->getContents(), true);
     }
 
+    public function generateBTransaction(): string
+    {
+        return (string)random_int(100000, 999999);
+    }
+
     public function showPermissions(): array
     {
         $accessToken = $this->generateToken();

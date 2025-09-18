@@ -22,8 +22,7 @@ class User
             $this->auth->clientSecret
         );
 
-        $bTransaction = "123456";
-
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/users", [
             'headers' => [
@@ -60,7 +59,7 @@ class User
             $this->auth->clientSecret
         );
 
-        $bTransaction = "123456";
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/users/{$userId}", [
             'headers' => [
@@ -90,7 +89,7 @@ class User
             $this->auth->clientSecret
         );
 
-        $bTransaction = "123456";
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->get("/caas/v1.0/agreements/{$agreementId}/users", [
             'headers' => [
@@ -123,7 +122,7 @@ class User
             $this->auth->clientSecret
         );
 
-        $bTransaction = "123456";
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->delete("/caas/v1.0/agreements/{$agreementId}/users", [
             'headers' => [
@@ -155,7 +154,7 @@ class User
             $this->auth->clientSecret
         );
 
-        $bTransaction = "123456";
+        $bTransaction = $this->auth->generateBTransaction();
 
         $response = $this->client->http()->patch("/caas/v1.0/agreements/{$agreementId}/users", [
             'headers' => [

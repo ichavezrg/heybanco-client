@@ -47,7 +47,6 @@ class AgreementTest extends TestCase
     {
         $agreements = $this->agreement->find(
             $this->contractNumber,
-            (string)random_int(10000, 99999),
             'c78ee0f5-c521-4896-84a0-4ba13ecce4dd',
             '7iL6uCS5sC02sySo8qyaCQbVXdodcFB7'
         );
@@ -57,7 +56,7 @@ class AgreementTest extends TestCase
 
     public function testHealthCheck(): void
     {
-        $healthCheck = $this->agreement->healthCheck("123456");
+        $healthCheck = $this->agreement->healthCheck();
         $this->assertNotEmpty($healthCheck);
     }
 
@@ -65,11 +64,14 @@ class AgreementTest extends TestCase
     {
         $transactions = $this->agreement->getTransactions(
             62,
-            new \DateTimeImmutable("2025-09-01"),
-            new \DateTimeImmutable("2025-09-01"),
+            new \DateTimeImmutable("2025-09-10"),
+            new \DateTimeImmutable("2025-09-15"),
             1,
             10
         );
+
+        print_r($transactions);
+        exit;
 
         $this->assertIsArray($transactions);
     }
