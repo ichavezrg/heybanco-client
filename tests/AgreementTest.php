@@ -67,7 +67,7 @@ class AgreementTest extends TestCase
             new \DateTimeImmutable("2025-09-10"),
             new \DateTimeImmutable("2025-09-15"),
             1,
-            10
+            1000
         );
 
         print_r($transactions);
