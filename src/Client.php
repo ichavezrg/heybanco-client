@@ -3,6 +3,7 @@
 namespace Ichavezrg\HeyBancoClient;
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\HandlerStack;
 
 class Client
 {
@@ -22,6 +23,7 @@ class Client
         public readonly string $mtlsKeystorePath,
         public readonly string $mtlsKeystorePassword,
         public readonly bool $debug = false,
+        public readonly HandlerStack|null $handlerStack = null,
     ) {
         if (!file_exists($this->mtlsKeystorePath)) {
             throw new \Exception('MTLs keystore file not found');
@@ -35,6 +37,7 @@ class Client
         $this->httpClient = new HttpClient([
             'base_uri' => $this->host,
             'debug' => $this->debug,
+            'handler' => $this->handlerStack,
             'headers' => [
                 'B-Application' => $this->bApplication,
                 'Accept' => 'application/json',
