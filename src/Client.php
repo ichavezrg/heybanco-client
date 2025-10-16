@@ -25,15 +25,6 @@ class Client
         public readonly bool $debug = false,
         public readonly HandlerStack|null $handlerStack = null,
     ) {
-        if (!file_exists($this->mtlsKeystorePath)) {
-            throw new \Exception('MTLs keystore file not found');
-        }
-
-        // Verificar que la extensión curl esté disponible
-        if (!extension_loaded('curl')) {
-            throw new \Exception('CURL extension is required but not installed');
-        }
-
         $this->httpClient = new HttpClient([
             'base_uri' => $this->host,
             'debug' => $this->debug,
