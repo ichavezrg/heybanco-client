@@ -23,7 +23,8 @@ class AgreementTest extends TestCase
         $this->client = new Client(
             host: 'https://sbox-api-tech.hey.inc',
             bApplication: $bApplication,
-            mtlsKeystorePath: 'tests/certs/Client_KeyStore_mTLS.p12',
+            certPath: 'tests/certs/cert.pem',
+            keyPath: 'tests/certs/key.pem',
             mtlsKeystorePassword: 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ='
         );
 

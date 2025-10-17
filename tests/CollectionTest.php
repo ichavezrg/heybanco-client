@@ -59,7 +59,7 @@ class CollectionTest extends TestCase
 
     public function testFind(): void
     {
-        $collection = $this->collection->find(62, 1, 10, new DateTimeImmutable('2025-09-12'), new DateTimeImmutable('2025-09-15'));
+        $collection = $this->collection->find(62, 1, 10, new DateTimeImmutable('2025-09-12'), new DateTimeImmutable('2025-09-19'), "1812");
         print_r($collection);
         exit;
         $this->assertNotEmpty($collection["data"]);

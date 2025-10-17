@@ -20,7 +20,8 @@ class Client
     public function __construct(
         public readonly string $host,
         public readonly string $bApplication,
-        public readonly string $mtlsKeystorePath,
+        public readonly string $certPath,
+        public readonly string $keyPath,
         public readonly string $mtlsKeystorePassword,
         public readonly bool $debug = false,
         public readonly HandlerStack|null $handlerStack = null,
@@ -36,9 +37,9 @@ class Client
                 'Accept-Charset' => 'UTF-8',
             ],
             'curl' => [
-                \CURLOPT_SSLCERT => $this->mtlsKeystorePath,
+                \CURLOPT_SSLCERT => $this->certPath,
+                \CURLOPT_SSLKEY => $this->keyPath,
                 \CURLOPT_SSLCERTPASSWD => $this->mtlsKeystorePassword,
-                \CURLOPT_SSLCERTTYPE => 'P12',
                 \CURLOPT_SSL_VERIFYPEER => true,
                 \CURLOPT_SSL_VERIFYHOST => 2,
             ],

@@ -55,9 +55,9 @@ class WebhookTest extends TestCase
     public function testCreate(): void
     {
         $webhook = $this->webhook->create(
-            "https://api.qa.redgirasol.com/webhook/heybanco/authentication",
-            "https://api.qa.redgirasol.com/webhook/heybanco/notifications",
-            "https://api.qa.redgirasol.com/webhook/heybanco/authorization",
+            "https://api.qa.redgirasol.com/webhooks/heybanco/authentication",
+            "https://api.qa.redgirasol.com/webhooks/heybanco/notifications",
+            "https://api.qa.redgirasol.com/webhooks/heybanco/authorization",
             [["id" => 6]]
         );
         print_r($webhook);
@@ -73,7 +73,7 @@ class WebhookTest extends TestCase
 
     public function testDelete(): void
     {
-        $webhook = $this->webhook->delete(100);
+        $webhook = $this->webhook->delete(101);
         print_r($webhook);
         exit;
     }

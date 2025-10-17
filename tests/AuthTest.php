@@ -12,7 +12,8 @@ class AuthTest extends TestCase
             new Client(
                 'https://sbox-api-tech.hey.inc',
                 '845b7687-3886-4bb4-be1c-33e45a6c3d34',
-                'tests/certs/Client_KeyStore_mTLS.p12',
+                'tests/certs/cert.pem',
+                'tests/certs/key.pem',
                 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ='
             ),
             'c78ee0f5-c521-4896-84a0-4ba13ecce4dd',
@@ -40,7 +41,8 @@ class AuthTest extends TestCase
             new Client(
                 'https://sbox-api-tech.hey.inc',
                 '845b7687-3886-4bb4-be1c-33e45a6c3d34',
-                'tests/certs/Client_KeyStore_mTLS.p12',
+                'tests/certs/cert.pem',
+                'tests/certs/key.pem',
                 'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ='
             ),
             'c78ee0f5-c521-4896-84a0-4ba13ecce4dd',
