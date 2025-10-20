@@ -102,7 +102,9 @@ class User
 
         $payload = json_decode($response->getBody()->getContents(), true);
 
-        return $this->signature->decrypt($payload['data']);
+        $payload['data'] = $this->signature->decrypt($payload['data']);
+
+        return $payload;
     }
 
     /**

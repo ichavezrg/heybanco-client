@@ -72,7 +72,9 @@ class Agreement
 
         $responseArray = json_decode($response->getBody()->getContents(), true);
 
-        return $this->signature->decrypt($responseArray["data"]);
+        $responseArray['data'] = $this->signature->decrypt($responseArray['data']);
+
+        return $responseArray;
     }
 
     /**

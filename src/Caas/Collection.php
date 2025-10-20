@@ -71,7 +71,6 @@ class Collection
                     return [];
                 }
             }
-            print_r($e->getResponse()->getBody()->getContents());
             throw $e;
         }
     }
