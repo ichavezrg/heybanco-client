@@ -24,6 +24,8 @@ class User
 
         $bTransaction = $this->auth->generateBTransaction();
 
+        $this->client->logger?->info('Payload', $userRequests);
+
         $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/users", [
             'headers' => [
                 'B-Option' => 0,

@@ -8,6 +8,8 @@ use Ichavezrg\HeyBancoClient\Caas\Periodicity;
 use Ichavezrg\HeyBancoClient\Client;
 use Ichavezrg\HeyBancoClient\Signature;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LogLevel;
+use Symfony\Component\HttpKernel\Log\Logger;
 
 class CollectionTest extends TestCase
 {
@@ -24,9 +26,12 @@ class CollectionTest extends TestCase
         $this->client = new Client(
             'https://sbox-api-tech.hey.inc',
             '845b7687-3886-4bb4-be1c-33e45a6c3d34',
-            'tests/certs/Client_KeyStore_mTLS.p12',
+            'tests/certs/cert.pem',
+            'tests/certs/key.pem',
             'gOxH0cnofEL7wE/lH30aof0++2mrv1jHkoBAvOm3PUQ=',
-            true
+            false,
+            null,
+            new Logger(LogLevel::INFO)
         );
 
         $this->auth = new Auth(

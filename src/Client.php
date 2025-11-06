@@ -4,6 +4,7 @@ namespace Ichavezrg\HeyBancoClient;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
+use Psr\Log\LoggerInterface;
 
 class Client
 {
@@ -25,6 +26,7 @@ class Client
         public readonly string $mtlsKeystorePassword,
         public readonly bool $debug = false,
         public readonly HandlerStack|null $handlerStack = null,
+        public readonly ?LoggerInterface $logger = null,
     ) {
         $this->httpClient = new HttpClient([
             'base_uri' => $this->host,

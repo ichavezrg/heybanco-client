@@ -114,6 +114,8 @@ class Collection
             "collectionValidity" => $collectionValidity->toArray()
         ];
 
+        $this->client->logger?->info('Payload', $payload);
+
         $response = $this->client->http()->post("/caas/v1.0/agreements/{$agreementId}/collections", [
             "headers" => [
                 "Authorization" => "Bearer " . $accessToken['access_token'],
