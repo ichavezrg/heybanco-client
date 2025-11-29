@@ -28,7 +28,7 @@ class Client
         public readonly HandlerStack|null $handlerStack = null,
         public readonly ?LoggerInterface $logger = null,
     ) {
-        $this->httpClient = new HttpClient([
+        $this->httpClient = new ClientProxy([
             'base_uri' => $this->host,
             'debug' => $this->debug,
             'handler' => $this->handlerStack,
@@ -45,7 +45,7 @@ class Client
                 \CURLOPT_SSL_VERIFYPEER => true,
                 \CURLOPT_SSL_VERIFYHOST => 2,
             ],
-        ]);
+        ], $this->logger);
     }
 
     public function http(): HttpClient
