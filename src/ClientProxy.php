@@ -10,7 +10,7 @@ class ClientProxy extends Client
 {
     public function __construct(array $config = [], private readonly ?LoggerInterface $logger = null)
     {
-        return parent::__construct($config);
+        parent::__construct($config);
     }
 
     public function request(string $method, $uri = '', array $options = []): ResponseInterface
@@ -23,6 +23,8 @@ class ClientProxy extends Client
             "response" => $response->getBody()->getContents(),
             "headers" => $headers,
         ]);
+
+        $response->getBody()->rewind();
 
         return $response;
     }
