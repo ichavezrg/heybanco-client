@@ -28,8 +28,8 @@ class Collection
         int $agreementId,
         int $page,
         int $size,
-        DateTimeImmutable $from,
-        DateTimeImmutable $to,
+        ?DateTimeImmutable $from = null,
+        ?DateTimeImmutable $to = null,
         ?string $reference = null,
         ?string $accountNumber = null
     ): array {
