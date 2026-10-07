@@ -7,6 +7,19 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.0.17] - 2026-10-07
+
+### Added
+
+-   Misc Webhooks: soporte de la API v1.1 (`/misc/v1.1/webhooks`) mediante `WebhookApiVersion` y `Webhook::withVersion()`. Por defecto sigue usando v1.0.
+-   Misc Webhooks: `find`, `update` (PATCH), `notifications` y `resend` (estos dos últimos solo v1.1).
+-   Misc Webhooks: paginación opcional en `findAll` y `showEvents`.
+-   Misc Webhooks: `create` devuelve `webhookId` tomado del header `Location`.
+
+### Changed
+
+-   `WebhookTest` ahora usa respuestas simuladas de Guzzle en lugar de pegarle al sandbox.
+
 ## [0.0.2] - 2025-09-10
 
 ### Added
