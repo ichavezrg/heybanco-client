@@ -15,7 +15,8 @@ class Client
      * @param string $bApplication
      * @param string $mtlsKeystorePath
      * @param string $mtlsKeystorePassword
-     * @param bool $debug
+     * @param bool $debug Activa la salida de depuración de Guzzle en STDERR, que incluye las cabeceras (el Bearer)
+     *                    y los cuerpos de cada llamada: no usarlo en producción.
      * @throws \Exception
      */
     public function __construct(

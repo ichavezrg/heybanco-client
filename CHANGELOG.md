@@ -7,6 +7,16 @@ y este proyecto adhiere al [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [Unreleased]
 
+## [0.0.18] - 2026-10-08
+
+### Security
+
+-   `ClientProxy` ya no escribe credenciales en el log. Antes registraba todas las opciones de cada petición y el cuerpo completo de cada respuesta, con lo que el `client_secret` (`form_params` del token), el `Bearer` de las cabeceras `Authorization` y los `access_token`, `id_token` y `refresh_token` que entrega Hey quedaban en el log. Ahora el log pasa por `LogSanitizer`:
+    -   se tapan por nombre de campo (`secret`, `password`, `passphrase`, `token`, `authorization`, `cookie`...) en arreglos, JSON y cuerpos `application/x-www-form-urlencoded`, y los `Bearer` en cualquier texto;
+    -   de las opciones de la petición solo se registran `headers`, `query`, `json`, `form_params` y `body`; `cert`, `ssl_key`, `auth` y `curl` (que pueden llevar contraseñas) nunca;
+    -   los cuerpos cifrados (JWE) de las operaciones de la API y las demás cabeceras se registran igual que antes.
+-   Los registros escritos por versiones anteriores siguen teniendo esos valores: conviene revisar la retención de los logs donde se hayan enviado.
+
 ## [0.0.17] - 2026-10-07
 
 ### Added
